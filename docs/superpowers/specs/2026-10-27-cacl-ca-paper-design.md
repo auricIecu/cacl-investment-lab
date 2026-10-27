@@ -1,6 +1,6 @@
 # CACL: diseño del piloto automático de Cartera CA
 
-Fecha: 27 de octubre de 2026. Estado: diseño para revisión.
+Fecha: 27 de octubre de 2026. Estado: diseño aprobado en conversación; plan técnico de fase 1 disponible en `docs/superpowers/plans/2026-10-27-ca-import-reconciliation.md`.
 
 ## Objetivo y decisiones acordadas
 
@@ -49,13 +49,13 @@ Universo inicial: unión de los símbolos del historial y las posiciones abierta
 
 - Valor de posiciones: 103.141,14 + 65.367,72 = 168.508,86 USD.
 - Resultado de filas cerradas: -128.407,33109537 USD.
-- Ajustes `J133` y `J134`: -55,60 + 40,41 = -15,19 USD.
+- Ajustes `J133` y `J134`: comisiones de venta Schwab (-55,60) y ajuste de coste medio frente a FIFO (+40,41), neto -15,19 USD.
 - Resultado realizado incluido en CA: -128.422,52109537 USD.
 - Dividendos y ajustes del bloque CA: 1.833,60 USD.
 - Efectivo calculado: 935.779,03 - 128.422,52109537 + 1.833,60 = 809.190,10890463 USD.
 - Efectivo más posiciones: 977.698,96890463 USD.
 
-Esto prueba coherencia de esas celdas, no una conciliación con Schwab. La naturaleza económica de los ajustes y de los aportes debe documentarse antes de atribuir rentabilidad. Se conservará precisión de origen y se redondeará para presentación y según las exigencias de cada orden.
+Esto prueba coherencia de esas celdas, no una conciliación con Schwab. Se conservarán los conceptos de los ajustes; sus comprobantes y los de aportes deben contrastarse antes de certificar rentabilidad. Se conservará precisión de origen y se redondeará para presentación y según las exigencias de cada orden.
 
 ## Arquitectura mínima
 
