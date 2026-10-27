@@ -2,6 +2,8 @@
 
 **Versión:** `CA-S2-1.0.0` · **Fecha:** 2026-10-27 · **Estado:** especificación completa para investigación y evaluación en fase 3. No es un método confirmado por el dueño, una estrategia validada ni una autorización para operar. Las reglas adicionales propuestas se identifican como **P**; las observadas en las fuentes como **V** o **X**. Esta versión no incorpora código de ejecución.
 
+**Enfoque confirmado por el usuario:** proponer un método completo para probar, marcando claramente los supuestos. Esta decisión confirma el carácter de propuesta de v1; no cambia sus parámetros ni acredita resultados.
+
 La hipótesis es comprar rupturas de máximos con una base de volatilidad contraída, dentro de un mercado favorable, usando puntuación y límites calculables. Sólo se permiten posiciones largas sin apalancamiento. El sistema puede permanecer completamente en efectivo. No existe objetivo mínimo de operaciones ni obligación de alcanzar una rentabilidad.
 
 ## 1. Procedencia y decisiones de alcance

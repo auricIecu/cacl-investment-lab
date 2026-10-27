@@ -23,7 +23,7 @@
 - [x] Leer diseño aprobado, transcripción y fotogramas del video entre 00:51 y 01:48.
 - [x] Contrastar ejemplos de `Risk_Management` con el 0,40% ilustrado en el video.
 - [x] Consultar documentación primaria sobre órdenes y disponibilidad temporal de datos; no derivar rentabilidad de esos documentos.
-- [x] Preguntar si se desea un método propuesto o una réplica del dueño; avanzar con el borrador autorizado y señalar sus supuestos mientras no exista otra instrucción.
+- [x] Confirmar el enfoque: el usuario eligió expresamente proponer un método completo para probar, marcando claramente los supuestos.
 
 ## Tarea 2 — Especificación completa
 
@@ -56,7 +56,7 @@
 
 ## Resultado de ejecución
 
-Entregados `CA-S2-1.0.0`, sus ejemplos y el calculador local. Se adoptó el enfoque de propuesta para investigación comunicado en la sesión; no se ha recibido confirmación del dueño sobre las reglas adicionales. La clasificación de candidato permanece visible en el reglamento, README y diseño general.
+Entregados `CA-S2-1.0.0`, sus ejemplos y el calculador local. El usuario confirmó expresamente el enfoque de propuesta completa para pruebas, con supuestos identificados. Esa decisión no equivale a confirmar que los parámetros adicionales reproducen el método del dueño. La clasificación de candidato permanece visible en el reglamento, README y diseño general.
 
 Verificación: calculador ejecutado correctamente; 21 assertions en el código (las del ejemplo heredado se ejecutan para ambos activos). Una mutación del resultado esperado 373 → 374 produjo AssertionError, como corresponde. Se comprobaron nueve enlaces locales y ausencia de marcadores pendientes. La revisión manual cubrió cortes temporales, umbrales inclusivos, reservas, reglas de recuperación, protección parcial y atribución de resultados. No se modificó el importador ni se volvió a certificar su suite en esta fase documental.
 
