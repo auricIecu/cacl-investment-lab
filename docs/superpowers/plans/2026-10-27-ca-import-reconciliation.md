@@ -1,6 +1,6 @@
 # Cartera CA — Phase 1 Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Reconstruir Cartera CA desde el Excel, conservar su procedencia y producir una conciliación reproducible, sin conexión al broker.
 
@@ -97,7 +97,7 @@ Las celdas se conservan cuando hay valor o fórmula. `kind` puede ser `number`, 
 
 **Interfaces:** consume `Path` del Excel; produce `read_workbook(path)`, con el contrato anterior.
 
-- [ ] **1. Crear dependencia, paquetes y soporte de pruebas.**
+- [x] **1. Crear dependencia, paquetes y soporte de pruebas.**
 
 `requirements.txt` contiene exactamente `openpyxl==3.1.5`. Crear el entorno local con `python3 -m venv .venv` y `.venv/bin/python -m pip install -r requirements.txt`. El soporte de pruebas es:
 
@@ -120,7 +120,7 @@ Antes de la primera prueba, establecer la ruta en la sesión de ejecución:
 export CA_WORKBOOK='.context/attachments/ymjXAP/Trade_Entry_Plans_Live (4).xlsx'
 ```
 
-- [ ] **2. Escribir la prueba que falla antes de crear el lector.**
+- [x] **2. Escribir la prueba que falla antes de crear el lector.**
 
 ```python
 import unittest
@@ -140,9 +140,9 @@ class WorkbookTests(unittest.TestCase):
 
 Z55 contiene la nota al pie de los indicadores; las celdas vacías sin fórmula no pertenecen al inventario.
 
-- [ ] **3. Ejecutar `.venv/bin/python -m unittest tests.test_workbook -v` y comprobar el fallo por ausencia del lector.**
+- [x] **3. Ejecutar `.venv/bin/python -m unittest tests.test_workbook -v` y comprobar el fallo por ausencia del lector.**
 
-- [ ] **4. Implementar lectura en dos vistas y clasificación por encabezados.**
+- [x] **4. Implementar lectura en dos vistas y clasificación por encabezados.**
 
 ```python
 from decimal import Decimal
@@ -169,9 +169,9 @@ En dividendos buscar exactamente el encabezado normalizado `dividend payments_ca
 
 Identificar los bloques laterales por sus rótulos y filas de columnas descritos en la especificación. Conservar las celdas restantes y emitir `unknown_block` cuando no se les pueda asignar significado; no descartarlas. Si falta una hoja obligatoria o no puede abrirse el ZIP/XML, emitir error claro y no escribir una revisión parcial.
 
-- [ ] **5. Ejecutar pruebas y revisar el inventario real.** Añadir pruebas de `normalize_header("Invested\u00a0") == "invested"`, fórmula sin caché y error `#VALUE!` conservado. Confirmar presencia de las fórmulas de AH3 y de los parámetros AF3, AF8 y AF9. Ejecutar el comando de pruebas anterior hasta que pase.
+- [x] **5. Ejecutar pruebas y revisar el inventario real.** Añadir pruebas de `normalize_header("Invested\u00a0") == "invested"`, fórmula sin caché y error `#VALUE!` conservado. Confirmar presencia de las fórmulas de AH3 y de los parámetros AF3, AF8 y AF9. Ejecutar el comando de pruebas anterior hasta que pase.
 
-- [ ] **6. Commit:** `git add requirements.txt .gitignore cacl_ca tests` y `git commit -m "feat: inventory CA workbook blocks and source cells"`.
+- [x] **6. Commit:** `git add requirements.txt .gitignore cacl_ca tests` y `git commit -m "feat: inventory CA workbook blocks and source cells"`.
 
 ## Task 2: Extraer posiciones, operaciones, flujos y serie CA
 
@@ -179,7 +179,7 @@ Identificar los bloques laterales por sus rótulos y filas de columnas descritos
 
 **Interfaces:** consume el resultado de `read_workbook`; produce `extract_ca(book)`.
 
-- [ ] **1. Añadir pruebas de aceptación de extracción.**
+- [x] **1. Añadir pruebas de aceptación de extracción.**
 
 ```python
 from decimal import Decimal
@@ -201,9 +201,9 @@ def test_extracts_ca_without_treating_summaries_as_trades(self):
 
 Los métodos marcados como adicionales deben colocarse dentro de la clase; el código del plan separa los imports para facilitar la lectura.
 
-- [ ] **2. Ejecutar `tests.test_workbook` y verificar fallo por ausencia de `extract_ca`.**
+- [x] **2. Ejecutar `tests.test_workbook` y verificar fallo por ausencia de `extract_ca`.**
 
-- [ ] **3. Implementar los mapeos y validaciones de cada bloque.**
+- [x] **3. Implementar los mapeos y validaciones de cada bloque.**
 
 ```python
 POSITION_HEADERS = {
@@ -228,7 +228,7 @@ En dividendos, cada fila con fecha y acción dentro del bloque CA es un flujo; c
 
 Los posibles grupos de salidas parciales se identifican por símbolo, fecha de entrada y coste medio coincidentes. Se etiquetan como candidatos a revisión, conservando cada fila; no se fusionan ni se deducen lotes FIFO automáticamente.
 
-- [ ] **4. Añadir una prueba de dato obligatorio ausente y de ubicación flexible.**
+- [x] **4. Añadir una prueba de dato obligatorio ausente y de ubicación flexible.**
 
 ```python
 from copy import deepcopy
@@ -242,8 +242,8 @@ def test_missing_quantity_blocks_the_snapshot(self):
 
 Para probar desplazamiento, mover todas las coordenadas del bloque de dividendos CA dos filas en una copia del inventario mediante `openpyxl.utils.cell.coordinate_from_string`, conservando su contenido y referencias de bloque. Comprobar los mismos 45 flujos y el mismo neto, sin depender de G50 o J50 para la extracción. Implementar esa transformación dentro de la prueba, no como función de producción.
 
-- [ ] **5. Ejecutar `tests.test_workbook` hasta que todas las pruebas pasen.**
-- [ ] **6. Commit:** `git add cacl_ca/workbook.py tests/test_workbook.py` y `git commit -m "feat: extract CA positions trades and cash flows"`.
+- [x] **5. Ejecutar `tests.test_workbook` hasta que todas las pruebas pasen.**
+- [x] **6. Commit:** `git add cacl_ca/workbook.py tests/test_workbook.py` y `git commit -m "feat: extract CA positions trades and cash flows"`.
 
 ## Task 3: Conciliación y revisión de indicadores laterales
 
@@ -251,7 +251,7 @@ Para probar desplazamiento, mover todas las coordenadas del bloque de dividendos
 
 **Interfaces:** consume `extract_ca(book)`; produce `reconcile(snapshot)`.
 
-- [ ] **1. Crear las pruebas monetarias de aceptación.**
+- [x] **1. Crear las pruebas monetarias de aceptación.**
 
 ```python
 import unittest
@@ -277,9 +277,9 @@ class ReconcileTests(unittest.TestCase):
         self.assertEqual(report["status"], "review_required")
 ```
 
-- [ ] **2. Ejecutar `.venv/bin/python -m unittest tests.test_reconcile -v` y comprobar el fallo antes de implementar.**
+- [x] **2. Ejecutar `.venv/bin/python -m unittest tests.test_reconcile -v` y comprobar el fallo antes de implementar.**
 
-- [ ] **3. Implementar sumas, comparaciones y métricas básicas.**
+- [x] **3. Implementar sumas, comparaciones y métricas básicas.**
 
 ```python
 from decimal import Decimal, ROUND_HALF_UP
@@ -298,7 +298,7 @@ Calcular valor de cada posición incluida como cantidad × precio guardado; comp
 
 Calcular aciertos con PnL estrictamente positivo, pérdidas con PnL negativo y empates con cero. Profit factor = beneficio bruto / valor absoluto de pérdida bruta; si no hay pérdidas, devolver `None` y explicar que el cociente no está definido. Win rate incluye las filas con resultado cero en su denominador. No aplicar Kelly ni convertir métricas descriptivas en reglas de riesgo.
 
-- [ ] **4. Revisar bloques derivados sin construir un motor de Excel.**
+- [x] **4. Revisar bloques derivados sin construir un motor de Excel.**
 
 Inventariar los indicadores Z:AA y AB:AC por etiqueta, valor, fórmula, unidad, período y parámetros vinculados. Recalcular los básicos de operaciones a partir de registros. Conservar Sharpe, Sortino, VaR, CVaR, beta y demás métricas avanzadas como `reference_only` mientras no se haya resuelto su definición y los aportes; indicar esta limitación individualmente. El objetivo de fase 1 es explicar las discrepancias, no certificar esas fórmulas.
 
@@ -312,7 +312,7 @@ Comparar las fechas finales de series diarias, semanales, mensuales y de gráfic
 
 Si los checks aritméticos pasan pero existen estas advertencias, devolver `review_required`. Datos monetarios obligatorios ausentes, filas ambiguas o checks monetarios fallidos producen `invalid`. Ningún estado significa que la cartera esté lista para operar.
 
-- [ ] **5. Probar una discrepancia real inducida.**
+- [x] **5. Probar una discrepancia real inducida.**
 
 ```python
 def test_wrong_equity_is_not_silently_accepted(self):
@@ -325,7 +325,7 @@ def test_wrong_equity_is_not_silently_accepted(self):
 
 Añadir casos para denominador cero, retención negativa, orden cronológico de salidas y un ajuste que no debe contarse dos veces. Ejecutar `tests.test_workbook` y `tests.test_reconcile`.
 
-- [ ] **6. Commit:** `git add cacl_ca/reconcile.py tests/test_reconcile.py` y `git commit -m "feat: reconcile CA balances and report workbook discrepancies"`.
+- [x] **6. Commit:** `git add cacl_ca/reconcile.py tests/test_reconcile.py` y `git commit -m "feat: reconcile CA balances and report workbook discrepancies"`.
 
 ## Task 4: Versiones locales, comando e informe
 
@@ -333,7 +333,7 @@ Añadir casos para denominador cero, retención negativa, orden cronológico de 
 
 **Interfaces:** consume `snapshot` y `report`; produce `save_import(...)`, `render_report(...)` y `python -m cacl_ca import`.
 
-- [ ] **1. Escribir pruebas de persistencia sin duplicados.**
+- [x] **1. Escribir pruebas de persistencia sin duplicados.**
 
 ```python
 import tempfile
@@ -356,9 +356,9 @@ class StorageTests(unittest.TestCase):
             self.assertEqual(again, (1, False))
 ```
 
-- [ ] **2. Ejecutar `.venv/bin/python -m unittest tests.test_storage -v` y comprobar el fallo inicial.**
+- [x] **2. Ejecutar `.venv/bin/python -m unittest tests.test_storage -v` y comprobar el fallo inicial.**
 
-- [ ] **3. Implementar SQLite y archivo inmutable.**
+- [x] **3. Implementar SQLite y archivo inmutable.**
 
 ```sql
 CREATE TABLE IF NOT EXISTS imports (
@@ -379,7 +379,7 @@ Antes de insertar, recalcular el hash del archivo y compararlo con `snapshot["so
 
 Para probar revisiones distintas sin modificar datos financieros, copiar el ZIP a un temporal y añadir un comentario ZIP con `zipfile.ZipFile(..., "a").comment = b"revision-test"`; verificar que el original no cambió, el nuevo hash difiere y ambas revisiones se conservan. Añadir una prueba de hash inconsistente que no deja filas insertadas.
 
-- [ ] **4. Implementar CLI con ruta obligatoria y salidas deterministas.**
+- [x] **4. Implementar CLI con ruta obligatoria y salidas deterministas.**
 
 ```python
 import argparse
@@ -398,7 +398,7 @@ El comando llama lector → extractor → conciliación → almacenamiento → i
 
 Crear el informe mediante temporal y reemplazo atómico, conservando el anterior si falla la escritura. En una reimportación usar los datos ya guardados de esa revisión para producir el mismo contenido; no reescribir su timestamp. Con estado `invalid`, escribir un diagnóstico si se puede y devolver 2. Archivo ilegible, permisos o SQLite inaccesible devuelven 1 con mensaje concreto. `reconciled` o `review_required` devuelven 0, con estado e incidencias visibles; una ejecución correcta no equivale a datos certificados.
 
-- [ ] **5. Probar el comando como proceso y documentar su uso.**
+- [x] **5. Probar el comando como proceso y documentar su uso.**
 
 ```python
 import subprocess
@@ -435,7 +435,7 @@ git status --short
 
 Verificar una sola fila en SQLite después de las dos importaciones del mismo adjunto, hash del original intacto y ausencia de bases de datos, archivos financieros y credenciales en `git status`. Revisar que `git check-ignore .context/ca/ca.sqlite3` identifica el archivo como ignorado.
 
-- [ ] **6. Commit:** añadir únicamente los módulos, pruebas y README de esta tarea; `git commit -m "feat: persist CA import revisions and reconciliation reports"`.
+- [x] **6. Commit:** añadir únicamente los módulos, pruebas y README de esta tarea; `git commit -m "feat: persist CA import revisions and reconciliation reports"`.
 
 ## Resultado esperado y asuntos que requieren evidencia adicional
 
@@ -450,3 +450,12 @@ El adjunto debe terminar en `review_required`: contiene rangos desactualizados y
 - Los importes se procesan con Decimal. El importador no ejecuta fórmulas ni inventa precios, retornos o hechos faltantes.
 - Las pruebas se basan en resultados financieros concretos, aislamiento CA, revisión inmutable y fallos que podrían corromper la cartera.
 - Las métricas avanzadas conservadas como referencia y la elegibilidad no comprobada se declaran explícitamente; no se contabilizan como verificaciones realizadas.
+
+
+## Ejecución completada — 2026-10-27
+
+Las cuatro tareas están implementadas. Verificación final: 33 pruebas pasan, incluidas ejecución del CLI, aislamiento CA, entradas incompletas, rollback y reintento de SQLite. Las 19 comprobaciones de conciliación del adjunto pasan; el estado sigue siendo `review_required` por los hallazgos documentados, sin habilitar trading.
+
+Se ejecutó dos veces el comando final con el original: una sola revisión por hash y versión, mismo informe y SHA-256 intacto. La versión 2 corrige la procedencia de la cabecera diaria a `History_CA!B10`; se conserva la revisión local de validación v1 sin sobrescribirla. No cambian los saldos por esa corrección.
+
+Informe final local: `.context/ca/reports/bc6eb1e91cad2659a1892a14bc18bf3b4c1be528434cc0bf3683b07de20dc041-v2.md`. SQLite, copias del Excel y adjuntos están excluidos de Git. `git diff --check` pasa. El README documenta instalación, ejecución, estados, límites y pruebas. Se conserva la rama de trabajo sin merge ni publicación.

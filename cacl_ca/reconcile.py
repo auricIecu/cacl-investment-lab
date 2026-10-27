@@ -7,7 +7,7 @@ from openpyxl.formula import Tokenizer
 from openpyxl.formula.tokenizer import TokenizerError
 from openpyxl.utils.cell import coordinate_to_tuple, get_column_letter, range_boundaries
 
-from .workbook import _issue, _rows, normalize_header
+from .workbook import _header, _issue, _rows, normalize_header
 
 
 CENT = Decimal("0.01")
@@ -95,6 +95,9 @@ def _side_panels(snapshot, metrics, checks, issues):
         if not headers:
             continue
         (header_row, date_col), _ = min(headers)
+        if block["name"] == "Serie diaria":
+            header_row, columns = _header(_rows(cells), ["date", "port_value_close", "bench_close"], "History_CA")
+            date_col = columns["date"]
         dates = [c["value"][:10] for a, c in cells.items() if c["kind"] == "date"
                  and coordinate_to_tuple(a)[1] == date_col and coordinate_to_tuple(a)[0] > header_row]
         series.append({"name": series_names[block["name"]], "first_date": min(dates, default=None),

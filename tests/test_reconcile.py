@@ -31,6 +31,8 @@ class ReconcileTests(unittest.TestCase):
         self.assertEqual(report["status"], "review_required")
         self.assertGreater(len(report["reference_metrics"]), 40)
         self.assertEqual({s["name"] for s in report["series"]}, {"daily", "weekly", "monthly", "chart"})
+        daily = next(s for s in report["series"] if s["name"] == "daily")
+        self.assertEqual(daily["source"]["cell"], "B10")
 
     def test_wrong_equity_is_invalid(self):
         snapshot = deepcopy(self.snapshot)

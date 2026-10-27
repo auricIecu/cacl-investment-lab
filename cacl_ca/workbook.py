@@ -205,7 +205,7 @@ def _inventory_blocks(book, issues):
 
 def extract_ca(book: dict) -> dict:
     issues = list(book["issues"])
-    snapshot = {"source_sha256": book["source_sha256"], "schema_version": 1, "as_of": None,
+    snapshot = {"source_sha256": book["source_sha256"], "schema_version": 2, "as_of": None,
                 "positions": [], "trades": [], "cashflows": [], "history": [], "balances": {},
                 "balance_sources": {}, "adjustments": [], "symbols": [], "issues": issues,
                 "source_cells": {name: s["cells"] for name, s in book["sheets"].items()}}
@@ -222,12 +222,13 @@ def extract_ca(book: dict) -> dict:
 
     name = "Cartera_CA"
     rows = _rows(book["sheets"][name]["cells"])
-    start, h = _header(rows, ["symbol", "units", "avg. cost", "value today", "invested"], name)
+    start, h = _header(rows, ["symbol", "units", "avg. cost", "current price", "value today", "invested"], name)
     end, _ = _label(rows, "Unrealized P&L", name)
     for row in range(start + 1, end):
         symbol = _value(rows, row, h["symbol"])
-        if not symbol:
-            if _value(rows, row, h["units"]) is not None:
+        if not symbol or rows[row][h["symbol"]]["kind"] != "text":
+            if symbol or any(_value(rows, row, h[k]) is not None
+                             for k in ("units", "avg. cost", "current price", "value today", "invested")):
                 _issue(issues, "missing_symbol", "Posición sin símbolo.", name, str(row), "error")
             continue
         included = _value(rows, row, min(h.values()) - 1)
@@ -254,14 +255,14 @@ def extract_ca(book: dict) -> dict:
     name = "Liquidación_Posiciones_CA"
     sheet = book["sheets"][name]
     rows = _rows(sheet["cells"])
-    start, h = _header(rows, ["symbol", "units", "status", "realized pnl", "entry date", "exit date"], name)
+    mapping = {"units": "quantity", "avg. cost": "average_cost", "closing price": "closing_price",
+               "invested": "invested", "closing value": "closing_value", "realized pnl": "pnl"}
+    start, h = _header(rows, ["symbol", "status", "entry date", "exit date", *mapping], name)
     if "Trades" not in sheet["tables"]:
         raise ValueError(f"{name}: falta la tabla Trades")
     _, table_start, _, table_end = range_boundaries(sheet["tables"]["Trades"])
     if table_start != start:
         raise ValueError(f"{name}: encabezado fuera de la tabla Trades")
-    mapping = {"units": "quantity", "avg. cost": "average_cost", "closing price": "closing_price",
-               "invested": "invested", "closing value": "closing_value", "realized pnl": "pnl"}
     for row in sorted(rows):
         if row <= start:
             continue
@@ -271,9 +272,9 @@ def extract_ca(book: dict) -> dict:
                 _issue(issues, "table_range_incomplete", "Fila con estado fuera de Trades.",
                        name, str(row), "error")
             continue
-        if symbol is None and status is None:
+        if all(_value(rows, row, h[k]) is None for k in ("symbol", "status", "entry date", "exit date", *mapping)):
             continue
-        if not symbol or normalize_header(status) != "closed":
+        if not symbol or rows[row][h["symbol"]]["kind"] != "text" or normalize_header(status) != "closed":
             _issue(issues, "invalid_trade", "Operación sin símbolo o con estado desconocido.",
                    name, str(row), "error")
             continue
@@ -300,7 +301,8 @@ def extract_ca(book: dict) -> dict:
         if all(_value(rows, row, h[k]) is None for k in ("payment date", "action", "amount")):
             continue
         action, symbol = _value(rows, row, h["action"]), _value(rows, row, h["symbol"])
-        if not action or not symbol:
+        if (not action or not symbol or rows[row][h["symbol"]]["kind"] != "text"
+                or rows[row][h["action"]]["kind"] != "text"):
             _issue(issues, "invalid_cashflow", "Flujo CA sin acción o símbolo.", name, str(row), "error")
         snapshot["cashflows"].append({"date": _date(rows, row, h["payment date"], issues, name),
             "action": action, "symbol": symbol,

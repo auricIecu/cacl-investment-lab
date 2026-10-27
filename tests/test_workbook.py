@@ -36,6 +36,28 @@ class WorkbookTests(unittest.TestCase):
         snapshot = extract_ca(book)
         self.assertTrue(any(i["severity"] == "error" for i in snapshot["issues"]))
 
+    def test_missing_required_headers_are_clear_errors(self):
+        for sheet, address in (("Cartera_CA", "G4"), ("Liquidación_Posiciones_CA", "G2")):
+            with self.subTest(sheet=sheet):
+                book = deepcopy(self.book)
+                del book["sheets"][sheet]["cells"][address]
+                with self.assertRaisesRegex(ValueError, "encabezado"):
+                    extract_ca(book)
+
+    def test_rows_with_money_but_missing_identifiers_are_not_silently_skipped(self):
+        for sheet, addresses in (("Cartera_CA", ("C5", "D5")),
+                                  ("Liquidación_Posiciones_CA", ("C4", "K4"))):
+            with self.subTest(sheet=sheet):
+                book = deepcopy(self.book)
+                for address in addresses:
+                    del book["sheets"][sheet]["cells"][address]
+                self.assertTrue(any(i["severity"] == "error" for i in extract_ca(book)["issues"]))
+
+    def test_excel_error_in_symbol_blocks_the_snapshot(self):
+        book = deepcopy(self.book)
+        book["sheets"]["Cartera_CA"]["cells"]["C5"].update(value="#VALUE!", kind="error")
+        self.assertTrue(any(i["severity"] == "error" for i in extract_ca(book)["issues"]))
+
     def test_dividend_rows_can_move(self):
         from openpyxl.utils.cell import coordinate_from_string
         book = deepcopy(self.book)
