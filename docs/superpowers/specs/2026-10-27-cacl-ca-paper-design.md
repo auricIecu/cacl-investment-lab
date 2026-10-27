@@ -16,6 +16,22 @@ Fuente local: `.context/attachments/ymjXAP/Trade_Entry_Plans_Live (4).xlsx`.
 
 Hojas principales: `Cartera_CA`, `Liquidación_Posiciones_CA`, `History_CA` y exclusivamente el bloque CA de `Dividend Payments`. `Risk_Management` aporta ejemplos que deben contrastarse. Las hojas generales de planes de entrada, opciones, remuneración y dimensionamiento no se incorporarán como órdenes o reglas vigentes por su mera presencia en el libro.
 
+### Cobertura completa de las hojas y aclaración del dueño
+
+La captura `.context/attachments/Z89qAr/image.png` aclara que `Dividend Payments` mezcla carteras y que existen bloques adicionales a la derecha de las tablas principales. Se verificaron ambos puntos contra el archivo recibido.
+
+| Hoja | Bloques identificados en esta versión | Tratamiento |
+|---|---|---|
+| `Dividend Payments` | CA: encabezado en C4, movimientos en filas 6–50 y total en J50. CL comienza en la fila 54; PYPL/BABA en la 86. | Incorporar únicamente CA. Conservar dividendos, retenciones, ajustes y efectivo por fracciones con su tipo y signo. Los otros bloques no forman parte de sus flujos. |
+| `Liquidación_Posiciones_CA` | Operaciones A:N; resúmenes mensuales R:T; consultas W:X; indicadores y parámetros Z:AA. | Importar operaciones una sola vez; conservar fórmulas, parámetros y resultados derivados como referencias de conciliación, sin contarlos otra vez como movimientos. |
+| `History_CA` | Serie diaria B:J; semanal L:R; mensual T:Z; indicadores y parámetros AB:AC; series, supuestos y resúmenes para gráficos AD:AJ. | Cubrir todos los bloques y sus dependencias. Conservar fechas base, aportes, benchmark y supuestos; recalcular indicadores con períodos y definiciones explícitos. |
+
+Los rangos anteriores describen este adjunto, no límites fijos del futuro importador. Se identificarán bloques mediante encabezados, tablas y contenido, revisando todas las columnas con datos o fórmulas. Un bloque nuevo o ambiguo genera una incidencia, no una atribución automática a CA.
+
+El bloque CA contiene 45 movimientos cuyo neto es 1.833,60 USD, coincidente con J50; no son 45 dividendos brutos, porque incluye retenciones y otros ajustes. Los indicadores laterales incluyen frecuencia de aciertos, beneficio/pérdida media, profit factor, drawdown, duración, Sharpe, Sortino y comparación con benchmark. Sus valores guardados se preservarán como evidencia, no como cálculos ya certificados.
+
+En `History_CA`, AH3 busca el último resultado sólo hasta AH266, mientras la serie diaria B:C llega a la fila 271 (2026-10-27). El bloque de fechas AD llega a la fila 270. Además, los indicadores y gráficos usan distintas fechas y bases de cálculo. La fase 1 debe explicar esas diferencias y detectar rangos incompletos; no escoger arbitrariamente uno de los porcentajes como rentabilidad oficial. El texto de `Liquidación_Posiciones_CA!Z3` menciona 106 operaciones, mientras AA9 y las filas cerradas contabilizan 125: la importación se basará en los registros, preservando la discrepancia del rótulo.
+
 | Concepto | Cantidad | Coste medio guardado | Precio guardado | Valor guardado |
 |---|---:|---:|---:|---:|
 | SPY | 134 | 661,23 USD | 769,71 USD | 103.141,14 USD |
@@ -74,7 +90,7 @@ Alpaca documenta que paper no simula dividendos. El informe mostrará por separa
 
 | Fase | Entregable | Condición para avanzar |
 |---|---|---|
-| 1. Reconstruir CA | Importación repetible, estado inicial, historial normalizado e informe de conciliación | Las dos posiciones y el efectivo concilian al centavo con el archivo; se explican los ajustes y se identifican los errores, lotes y activos no admitidos. No se presentan saldos calculados como verificación del broker. |
+| 1. Reconstruir CA | Importación repetible, estado inicial, historial normalizado e informe de conciliación | Las dos posiciones y el efectivo concilian al centavo con el archivo; se explican los ajustes y se identifican los errores, lotes y activos no admitidos. Sólo se atribuyen los dividendos CA; todos los bloques laterales quedan inventariados y sus diferencias de rangos, fechas y bases se explican. No se presentan saldos calculados como verificación del broker. |
 | 2. Definir el método | Documento versionado de reglas y ejemplos calculados | Mercado, patrones, puntuación 6/9, entradas por tramos si proceden, salidas, tamaño, efectivo, concentración y frenos quedan definidos sin lenguaje subjetivo. Las posiciones heredadas tienen política explícita. |
 | 3. Evaluar las reglas | Simulación reproducible y evaluación de limitaciones | No se usa información futura; costes, huecos de precio y supuestos de ejecución son explícitos; el sistema respeta los límites incluso en escenarios adversos. Se documenta un criterio de evaluación fuera de muestra antes de observar sus resultados. |
 | 4. Validar la ejecución paper | Conexión, inicialización conciliada y ciclo completo de órdenes | Funcionan entradas, salidas y protección; un reinicio o reintento no duplica órdenes; discrepancias, rechazos y fallos de protección se detectan y detienen nuevas entradas. |
