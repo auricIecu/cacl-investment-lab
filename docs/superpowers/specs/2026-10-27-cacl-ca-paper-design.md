@@ -1,6 +1,6 @@
 # CACL: diseño del piloto automático de Cartera CA
 
-Fecha: 27 de octubre de 2026. Estado: diseño aprobado en conversación; plan técnico de fase 1 disponible en `docs/superpowers/plans/2026-10-27-ca-import-reconciliation.md`.
+Fecha: 27 de octubre de 2026. Estado: diseño general aprobado en conversación; fase 1 implementada y verificada. Fase 2 entregada como [método candidato CA-S2-1.0.0](../../methods/ca-method-v1.md), con propuestas expresamente identificadas y ejemplos calculados. Su entrega no significa confirmación del dueño ni aprobación para operar.
 
 ## Objetivo y decisiones acordadas
 
@@ -126,9 +126,11 @@ Datos incompletos, saldos incongruentes o ausencia de protección bloquean nueva
 
 La simulación histórica y paper necesitan pruebas de huecos de apertura, datos ausentes, duplicados, reinicios, splits, ejecuciones parciales y rechazo de stops. Las condiciones del simulador no se presentarán como garantía de ejecución real.
 
-## Próximo trabajo tras revisar el diseño
+## Estado y próximo trabajo
 
-Redactar el plan técnico ejecutable de la fase 1: archivos, importador, almacenamiento, pruebas y conciliación. Las siguientes fases conservan sus entregables y condiciones; sus planes técnicos se detallarán usando la evidencia de la fase anterior. No se necesitan credenciales para empezar la reconstrucción local.
+La fase 1 dispone de importador, SQLite e informe; el adjunto concilia aritméticamente y conserva estado `review_required`. La fase 2 dispone de reglamento versionado y [ejemplos verificables](../../methods/ca-method-v1-examples.md). Las fórmulas que no venían definidas en las fuentes se proponen como hipótesis; no se atribuyen al dueño.
+
+El siguiente trabajo es planificar e implementar la evaluación aislada de fase 3: manifiesto de instrumentos, datos con disponibilidad temporal comprobable, motor de reglas y simulación de escenarios. No se da por validada rentabilidad ni elegibilidad de activos por haber completado el documento. Una confirmación o corrección del dueño sobre las propuestas origina una versión identificable antes de evaluar.
 
 ## Fuentes y límites verificados
 

@@ -1,6 +1,18 @@
 # CACL Investment Lab — Cartera CA
 
-Fase 1: importar y conciliar el Excel de CA, conservar su procedencia y generar un informe local. No se conecta a brokers, no consulta precios y no envía órdenes.
+Fase 1 implementada: importar y conciliar el Excel de CA, conservar su procedencia y generar un informe local. Fase 2 documentada: método candidato `CA-S2-1.0.0`, con reglas y ejemplos comprobables. No se conecta a brokers, no consulta precios y no envía órdenes.
+
+## Método candidato para la fase 3
+
+El [reglamento CA v1](docs/methods/ca-method-v1.md) define mercado, patrón S2, nueve puntos, catalizador estructurado, entradas, salidas, tamaño, efectivo, concentración, frenos y gestión de SPY/LLY heredados. Distingue lo observado en el video de los parámetros propuestos para probar. No representa una confirmación del método del dueño ni una estrategia validada.
+
+Los [ejemplos calculados](docs/methods/ca-method-v1-examples.md) se reproducen sin Excel ni red:
+
+```bash
+.venv/bin/python examples/ca_method_v1.py
+```
+
+Este calculador comprueba aritmética con assertions; no es un motor de señales, backtesting ni ejecución. La fase 3 deberá implementar y evaluar el método con datos cuya disponibilidad temporal pueda acreditarse.
 
 ## Ejecutar
 
@@ -72,4 +84,4 @@ git diff --check
 
 Las pruebas cubren aislamiento CA, paneles laterales, datos incompletos, signos de retenciones, conciliación, revisiones inmutables, fallo transaccional, integridad del original y ejecución del comando como proceso.
 
-El [diseño aprobado](docs/superpowers/specs/2026-10-27-cacl-ca-paper-design.md) describe las fases posteriores. Esta entrega termina en importación y conciliación local.
+El [diseño aprobado](docs/superpowers/specs/2026-10-27-cacl-ca-paper-design.md) describe el proyecto completo. Están entregadas la importación y conciliación local (fase 1) y la especificación candidata con ejemplos (fase 2); simulación, integración paper y operación pertenecen a fases posteriores.
