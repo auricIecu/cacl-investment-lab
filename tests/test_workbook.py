@@ -1,14 +1,77 @@
 import tempfile
 import unittest
+from copy import deepcopy
+from decimal import Decimal
 from pathlib import Path
 
 from openpyxl import Workbook
 
-from cacl_ca.workbook import read_workbook, normalize_header
+from cacl_ca.workbook import read_workbook, normalize_header, extract_ca
 from tests.support import source_path
 
 
 class WorkbookTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.book = read_workbook(source_path())
+
+    def test_extracts_ca_without_summaries_as_trades(self):
+        snapshot = extract_ca(self.book)
+        self.assertEqual(len(snapshot["trades"]), 125)
+        self.assertEqual(len(snapshot["cashflows"]), 45)
+        self.assertEqual(len(snapshot["symbols"]), 72)
+        self.assertEqual({p["symbol"]: Decimal(p["quantity"]) for p in snapshot["positions"]
+                          if p["included"]}, {"SPY": Decimal(134), "LLY": Decimal(51)})
+        self.assertEqual(snapshot["as_of"], "2026-10-27")
+        self.assertEqual(sum(Decimal(f["amount"]) for f in snapshot["cashflows"])
+                         .quantize(Decimal("0.01")), Decimal("1833.60"))
+        self.assertFalse([i for i in snapshot["issues"] if i["severity"] == "error"])
+        self.assertEqual(snapshot["balances"]["nominal_capital"], "1000000")
+        self.assertEqual(len(snapshot["adjustments"]), 2)
+        self.assertEqual(len(snapshot["history"]), 261)
+
+    def test_missing_quantity_blocks_the_snapshot(self):
+        book = deepcopy(self.book)
+        book["sheets"]["Cartera_CA"]["cells"]["D5"]["value"] = None
+        snapshot = extract_ca(book)
+        self.assertTrue(any(i["severity"] == "error" for i in snapshot["issues"]))
+
+    def test_dividend_rows_can_move(self):
+        from openpyxl.utils.cell import coordinate_from_string
+        book = deepcopy(self.book)
+        cells = book["sheets"]["Dividend Payments"]["cells"]
+        shifted = {}
+        for address, cell in cells.items():
+            column, row = coordinate_from_string(address)
+            shifted[f"{column}{row+3}"] = cell
+        book["sheets"]["Dividend Payments"]["cells"] = shifted
+        snapshot = extract_ca(book)
+        self.assertEqual(len(snapshot["cashflows"]), 45)
+        self.assertEqual(Decimal(snapshot["balances"]["reported_cashflows"])
+                         .quantize(Decimal("0.01")), Decimal("1833.60"))
+
+    def test_unknown_right_block_is_not_lost(self):
+        book = deepcopy(self.book)
+        book["sheets"]["History_CA"]["cells"]["AZ2"] = {
+            "value": "New metric", "formula": None, "kind": "text", "number_format": "General"}
+        snapshot = extract_ca(book)
+        self.assertIn("AZ2", snapshot["source_cells"]["History_CA"])
+        self.assertTrue(any(i["code"] == "unknown_block" for i in snapshot["issues"]))
+
+    def test_closed_trade_outside_table_is_flagged(self):
+        book = deepcopy(self.book)
+        book["sheets"]["Liquidación_Posiciones_CA"]["tables"]["Trades"] = "A2:N127"
+        snapshot = extract_ca(book)
+        self.assertTrue(any(i["code"] == "table_range_incomplete" and i["severity"] == "error"
+                            for i in snapshot["issues"]))
+
+    def test_missing_balance_is_not_zero(self):
+        book = deepcopy(self.book)
+        del book["sheets"]["Cartera_CA"]["cells"]["H15"]
+        snapshot = extract_ca(book)
+        self.assertIsNone(snapshot["balances"]["cash"])
+        self.assertTrue(any(i["severity"] == "error" for i in snapshot["issues"]))
+
     def test_reads_right_panels_and_only_ca_dividends(self):
         book = read_workbook(source_path())
         self.assertIn("AJ10", book["sheets"]["History_CA"]["cells"])
