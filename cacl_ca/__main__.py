@@ -105,12 +105,20 @@ def parser():
     command = commands.add_parser("import")
     command.add_argument("source", type=Path)
     command.add_argument("--output-dir", type=Path, default=Path(".context/ca"))
+    evaluation = commands.add_parser("evaluate", help="Evaluar CA con datos locales o informar qué falta.")
+    evaluation.add_argument("--db", type=Path, default=Path(".context/ca/ca.sqlite3"))
+    evaluation.add_argument("--revision", type=int)
+    evaluation.add_argument("--dataset", type=Path)
+    evaluation.add_argument("--output-dir", type=Path, default=Path(".context/phase3"))
     return root
 
 
 def main(argv=None):
     args = parser().parse_args(argv)
     try:
+        if args.command == "evaluate":
+            from .evaluation import run_evaluation
+            return run_evaluation(args.db, args.revision, args.dataset, args.output_dir)
         snapshot = extract_ca(read_workbook(args.source))
         report = reconcile(snapshot)
         revision, created = None, False

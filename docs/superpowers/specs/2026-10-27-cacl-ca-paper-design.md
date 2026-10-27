@@ -1,6 +1,6 @@
 # CACL: diseño del piloto automático de Cartera CA
 
-Fecha: 27 de octubre de 2026. Estado: diseño general aprobado en conversación; fase 1 implementada y verificada. Fase 2 entregada como [método candidato CA-S2-1.0.0](../../methods/ca-method-v1.md), con propuestas expresamente identificadas y ejemplos calculados. Su entrega no significa confirmación del dueño ni aprobación para operar.
+Fecha: 27 de octubre de 2026. Estado: fases 1–2 entregadas y fase 3 implementada como simulación local con evaluación de limitaciones. [Método candidato CA-S2-1.0.0](../../methods/ca-method-v1.md), con propuestas expresamente identificadas. Faltan históricos de mercado para evaluar rentabilidad; no significa confirmación del dueño ni aprobación para operar.
 
 ## Objetivo y decisiones acordadas
 
@@ -130,7 +130,9 @@ La simulación histórica y paper necesitan pruebas de huecos de apertura, datos
 
 La fase 1 dispone de importador, SQLite e informe; el adjunto concilia aritméticamente y conserva estado `review_required`. La fase 2 dispone de reglamento versionado y [ejemplos verificables](../../methods/ca-method-v1-examples.md). Las fórmulas que no venían definidas en las fuentes se proponen como hipótesis; no se atribuyen al dueño.
 
-El siguiente trabajo es planificar e implementar la evaluación aislada de fase 3: manifiesto de instrumentos, datos con disponibilidad temporal comprobable, motor de reglas y simulación de escenarios. No se da por validada rentabilidad ni elegibilidad de activos por haber completado el documento. Una confirmación o corrección del dueño sobre las propuestas origina una versión identificable antes de evaluar.
+La fase 3 dispone de motor de reglas, contabilidad y simulación por eventos, escenarios adversos y CLI `evaluate`. La [guía de evaluación](../../methods/ca-evaluation-data.md) define el paquete de datos y cómo reproducir los informes. Con los adjuntos disponibles, el resultado de mercado es `data_insufficient`; el ejemplo ficticio tiene estado `synthetic_only`. No se han comprobado elegibilidad real ni rentabilidad.
+
+El siguiente paso es completar y auditar la fuente de mercado para repetir la evaluación. Los criterios prospectivos están fijados antes de observar sus resultados; el período de 60–120 sesiones sigue pendiente. La integración Alpaca permanece en fase 4. Una corrección del dueño sobre las propuestas origina una versión identificable antes de evaluar de nuevo.
 
 ## Fuentes y límites verificados
 
@@ -139,4 +141,4 @@ El siguiente trabajo es planificar e implementar la evaluación aislada de fase 
 - [Alpaca: posiciones abiertas](https://docs.alpaca.markets/us/v1.1/reference/getallopenpositions): consulta de cantidades, coste y valor de mercado.
 - [Alpaca Trading API MCP](https://docs.alpaca.markets/us/docs/trading-api-mcp): herramientas de órdenes, posiciones y configuración del entorno paper.
 
-No se ha creado una cuenta, instalado plugins, ejecutado backtests ni enviado órdenes como parte de este diseño.
+No se ha creado una cuenta, instalado plugins ni enviado órdenes. Los replays ejecutados en fase 3 usan datos sintéticos; no hay un backtest histórico de mercado validado.

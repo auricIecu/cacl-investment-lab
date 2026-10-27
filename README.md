@@ -1,8 +1,8 @@
 # CACL Investment Lab — Cartera CA
 
-Fase 1 implementada: importar y conciliar el Excel de CA, conservar su procedencia y generar un informe local. Fase 2 documentada: método candidato `CA-S2-1.0.0`, con reglas y ejemplos comprobables. No se conecta a brokers, no consulta precios y no envía órdenes.
+Fases 1–3: importación y conciliación de CA, método candidato `CA-S2-1.0.0` y simulador local con informes reproducibles. La mecánica se comprueba con escenarios sintéticos; **la rentabilidad está sin validar por falta de históricos de mercado**. No se conecta a brokers, no descarga precios y no envía órdenes.
 
-## Método candidato para la fase 3
+## Método candidato y evaluación
 
 El [reglamento CA v1](docs/methods/ca-method-v1.md) define mercado, patrón S2, nueve puntos, catalizador estructurado, entradas, salidas, tamaño, efectivo, concentración, frenos y gestión de SPY/LLY heredados. Distingue lo observado en el video de los parámetros propuestos para probar. No representa una confirmación del método del dueño ni una estrategia validada.
 
@@ -12,7 +12,23 @@ Los [ejemplos calculados](docs/methods/ca-method-v1-examples.md) se reproducen s
 .venv/bin/python examples/ca_method_v1.py
 ```
 
-Este calculador comprueba aritmética con assertions; no es un motor de señales, backtesting ni ejecución. La fase 3 deberá implementar y evaluar el método con datos cuya disponibilidad temporal pueda acreditarse.
+Este calculador comprueba aritmética con assertions. El simulador de fase 3 añade decisiones por fecha, reservas, riesgo, stops, costes y escenarios adversos. Su [guía de datos y uso](docs/methods/ca-evaluation-data.md) describe el contrato y sus límites.
+
+Después de importar CA, generar el diagnóstico de datos disponibles:
+
+```bash
+.venv/bin/python -m cacl_ca evaluate
+```
+
+Sin paquete de mercado, escribe el informe en `.context/phase3/` y devuelve código **2**, estado `data_insufficient`. Para comprobar el simulador con datos **ficticios**:
+
+```bash
+mkdir -p .context/phase3
+.venv/bin/python examples/phase3_synthetic.py > .context/phase3/synthetic-market.json
+.venv/bin/python -m cacl_ca evaluate --dataset .context/phase3/synthetic-market.json
+```
+
+El resultado `synthetic_only` comprueba ejecución del programa, no rendimiento histórico. Los informes incluyen hashes, decisiones, operaciones hipotéticas y resultados base/estrés. No habilitan paper trading.
 
 ## Ejecutar
 
@@ -82,6 +98,6 @@ export CA_WORKBOOK='.context/attachments/ymjXAP/Trade_Entry_Plans_Live (4).xlsx'
 git diff --check
 ```
 
-Las pruebas cubren aislamiento CA, paneles laterales, datos incompletos, signos de retenciones, conciliación, revisiones inmutables, fallo transaccional, integridad del original y ejecución del comando como proceso.
+Las pruebas cubren aislamiento CA, conciliación y revisiones inmutables; exclusión de información futura, señales, límites, efectivo liquidado, huecos, parciales, fallos de protección, reinicios, costes y reportes reproducibles. El original se conserva intacto.
 
-El [diseño aprobado](docs/superpowers/specs/2026-10-27-cacl-ca-paper-design.md) describe el proyecto completo. Están entregadas la importación y conciliación local (fase 1) y la especificación candidata con ejemplos (fase 2); simulación, integración paper y operación pertenecen a fases posteriores.
+El [diseño aprobado](docs/superpowers/specs/2026-10-27-cacl-ca-paper-design.md) describe el proyecto completo. La fase 3 entrega simulación y evaluación de carencias; quedan pendientes la evidencia de mercado, la integración paper de fase 4 y la operación de fase 5.
