@@ -30,6 +30,8 @@ mkdir -p .context/phase3
 
 El resultado `synthetic_only` comprueba ejecución del programa, no rendimiento histórico. Los informes incluyen hashes, decisiones, operaciones hipotéticas y resultados base/estrés. No habilitan paper trading.
 
+La siguiente etapa tiene presupuesto de **USD 0** y se ejecutará en esta Mac. La [guía de arranque gratuito](docs/methods/ca-zero-budget-setup.md) recoge cómo preparar la cuenta paper y qué permisos de datos faltan por comprobar. El acceso gratuito a IEX en tiempo real no satisface por sí solo el contrato SIP del método.
+
 ## Ejecutar
 
 Desde la raíz del repositorio, con Python 3.11 o posterior (verificado con 3.14):
