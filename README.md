@@ -1,5 +1,7 @@
 # CACL Investment Lab — Cartera CA
 
+**Para continuar con otro agente o compañero:** leer [CONTEXT.md](CONTEXT.md), con decisiones, avances, pendientes y pasos para preparar una copia del proyecto.
+
 Fases 1–3: importación y conciliación de CA, método candidato `CA-S2-1.0.0` y simulador local con informes reproducibles. La mecánica se comprueba con escenarios sintéticos; **la rentabilidad está sin validar por falta de históricos de mercado**. No se conecta a brokers, no descarga precios y no envía órdenes.
 
 ## Método candidato y evaluación
