@@ -97,10 +97,10 @@ Python 3.11 o posterior; usado en este workspace con 3.14. Dependencia de proyec
 ## Continuar desde otro equipo o agente
 
 Repositorio: `https://github.com/auricIecu/cacl-investment-lab.git`.
-Rama de trabajo: `auricIecu/auriciecu/entender-video-cacl`. Base: `origin/master`; no confundir el estado de esta rama con master.
+Rama de trabajo: `dev/eric-cacl`. Base: `origin/master`; no confundir el estado de esta rama con master.
 
 ```bash
-git clone --branch auricIecu/auriciecu/entender-video-cacl https://github.com/auricIecu/cacl-investment-lab.git
+git clone --branch dev/eric-cacl https://github.com/auricIecu/cacl-investment-lab.git
 cd cacl-investment-lab
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
